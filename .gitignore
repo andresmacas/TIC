@@ -1,0 +1,17 @@
+[Libraries]
+/[Ll]ibrary/
+[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+[Ll]ogs/
+
+# Visual Studio
+.vscode/
+/.vs/
+/*.csproj
+/*.sln
+/*.user
+
+# Otros archivos innecesarios
+/ignore.conf
