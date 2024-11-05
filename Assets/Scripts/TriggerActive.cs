@@ -31,6 +31,8 @@ public class TriggerActive : MonoBehaviour
         animator.Play("Idle");
     }
 
+    
+
     private IEnumerator HacerSolicitud()
     {
         UnityWebRequest request = UnityWebRequest.Get(url);
