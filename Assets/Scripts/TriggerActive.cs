@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -12,9 +11,10 @@ public class ApiResponse
 
 public class TriggerActive : MonoBehaviour
 {
-
     private readonly string url = "http://localhost:3000/";
     private AzureTextToSpeech azureTTS;
+    private Animator animator;
+
 
     private void Start()
     {
@@ -24,24 +24,24 @@ public class TriggerActive : MonoBehaviour
         {
             Debug.LogError("No se encontró el componente AzureTTS en la escena.");
         }
+        // Obtiene el componente Animator del personaje
+        animator = GetComponent<Animator>();
+
+        // Reproduce la animación de Idle al iniciar
+        animator.Play("Idle");
     }
 
     private IEnumerator HacerSolicitud()
     {
-        // Crea la solicitud
         UnityWebRequest request = UnityWebRequest.Get(url);
-
-        // Espera la respuesta
         yield return request.SendWebRequest();
 
-        // Verifica si hubo algún error
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
             Debug.LogError("Error: " + request.error);
         }
         else
         {
-            // Procesa la respuesta
             string jsonResponse = request.downloadHandler.text;
             Debug.Log("Respuesta de la API: " + jsonResponse);
             ApiResponse response = JsonUtility.FromJson<ApiResponse>(jsonResponse);
@@ -54,17 +54,27 @@ public class TriggerActive : MonoBehaviour
         
     }
 
-    //Asegúrate de que el jugador tenga la etiqueta "Player" en el Inspector de Unity
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Algo ha entrado en el trigger.");
-        EjecutarScript();
+        if (other.CompareTag("Player")) // Asegúrate de que el objeto tenga la etiqueta "Player"
+        {
+            Debug.Log("¡El jugador ha activado el trigger!");
+            StartCoroutine(ActivarTalking());
+        }
     }
 
-    private void EjecutarScript()
+    private IEnumerator ActivarTalking()
     {
-        // Coloca aquí la lógica de tu script
-        Debug.Log("¡El jugador ha activado el trigger!");
+        // Activa la animación de Talking
+        animator.SetTrigger("StartTalking");
+
+        // Llama a la solicitud
         StartCoroutine(HacerSolicitud());
+
+        // Espera un momento antes de volver a Idle (ajusta el tiempo según la duración de la animación Talking)
+        yield return new WaitForSeconds(2.0f);
+
+        // Regresa a la animación Idle
+        animator.Play("Idle");
     }
 }
