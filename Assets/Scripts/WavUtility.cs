@@ -5,7 +5,7 @@ public static class WavUtility
 {
     public static AudioClip ToAudioClip(byte[] data)
     {
-        int headerSize = 44; // Tamaño estándar del encabezado WAV
+        int headerSize = 44; // Tamaï¿½o estï¿½ndar del encabezado WAV
         int sampleCount = (data.Length - headerSize) / 2;
         float[] audioData = new float[sampleCount];
 
