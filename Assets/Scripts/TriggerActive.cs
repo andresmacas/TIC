@@ -11,9 +11,10 @@ public class ApiResponse
 
 public class TriggerActive : MonoBehaviour
 {
-
     private readonly string url = "http://localhost:3000/";
     private AzureTextToSpeech azureTTS;
+    private Animator animator;
+
 
     private void Start()
     {
@@ -23,6 +24,11 @@ public class TriggerActive : MonoBehaviour
         {
             Debug.LogError("No se encontró el componente AzureTTS en la escena.");
         }
+        // Obtiene el componente Animator del personaje
+        animator = GetComponent<Animator>();
+
+        // Reproduce la animación de Idle al iniciar
+        animator.Play("Idle");
     }
 
     private IEnumerator HacerSolicitud()
