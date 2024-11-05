@@ -1,34 +1,23 @@
 using System;
-using System.IO;
 using UnityEngine;
 
 public static class WavUtility
 {
-    public static byte[] FromAudioClip(AudioClip clip)
+    public static AudioClip ToAudioClip(byte[] data)
     {
-        using (MemoryStream stream = new MemoryStream())
-        {
-            WriteWavHeader(stream, clip);
-            float[] samples = new float[clip.samples * clip.channels];
-            clip.GetData(samples, 0);
-            foreach (var sample in samples)
-            {
-                stream.Write(BitConverter.GetBytes((short)(sample * short.MaxValue)), 0, 2);
-            }
-            return stream.ToArray();
-        }
-    }
+        int headerSize = 44; // Tama�o est�ndar del encabezado WAV
+        int sampleCount = (data.Length - headerSize) / 2;
+        float[] audioData = new float[sampleCount];
 
-    private static void WriteWavHeader(Stream stream, AudioClip clip)
-    {
-        byte[] header = new byte[44];
-        int sampleRate = clip.frequency;
-        int samples = clip.samples;
-        int channels = clip.channels;
-
-        using (var writer = new BinaryWriter(stream))
+        for (int i = 0; i < sampleCount; i++)
         {
-            writer.Write(header, 0, header.Length);
+            short sample = BitConverter.ToInt16(data, headerSize + i * 2);
+            audioData[i] = sample / 32768.0f; // Normalizar los valores de audio
         }
+
+        AudioClip audioClip = AudioClip.Create("AzureTTS", sampleCount, 1, 16000, false);
+        audioClip.SetData(audioData, 0);
+
+        return audioClip;
     }
 }
