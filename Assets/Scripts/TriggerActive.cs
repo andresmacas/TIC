@@ -2,19 +2,36 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 
+[System.Serializable]
+public class ApiResponse
+{
+    public int code;
+    public string message;
+}
+
 public class TriggerActive : MonoBehaviour
 {
-    private string url = "http://localhost:3000/";
+    private readonly string url = "http://localhost:3000/";
+    private AzureTextToSpeech azureTTS;
     private Animator animator;
+
 
     private void Start()
     {
+        // Busca el componente AzureTTS en la escena
+        azureTTS = FindObjectOfType<AzureTextToSpeech>();
+        if (azureTTS == null)
+        {
+            Debug.LogError("No se encontró el componente AzureTTS en la escena.");
+        }
         // Obtiene el componente Animator del personaje
         animator = GetComponent<Animator>();
 
         // Reproduce la animación de Idle al iniciar
         animator.Play("Idle");
     }
+
+    
 
     private IEnumerator HacerSolicitud()
     {
@@ -29,8 +46,14 @@ public class TriggerActive : MonoBehaviour
         {
             string jsonResponse = request.downloadHandler.text;
             Debug.Log("Respuesta de la API: " + jsonResponse);
-            // Puedes deserializar el JSON aquí si es necesario
+            ApiResponse response = JsonUtility.FromJson<ApiResponse>(jsonResponse);
+            azureTTS.SynthesizeAndPlay(response.message);
+
+            // Aquí puedes deserializar el JSON si es necesario
+            // Por ejemplo, utilizando JsonUtility para un objeto específico:
+            // MiObjeto respuesta = JsonUtility.FromJson<MiObjeto>(jsonResponse);
         }
+        
     }
 
     private void OnTriggerEnter(Collider other)
