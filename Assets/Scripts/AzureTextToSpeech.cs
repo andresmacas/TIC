@@ -83,7 +83,7 @@ public class AzureTextToSpeech : MonoBehaviour
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
-                    Debug.Log("Archivo de audio eliminado: " + filePath);
+                    Debug.log("Archivo de audio eliminado: " + filePath);
                 }
             }
             else
