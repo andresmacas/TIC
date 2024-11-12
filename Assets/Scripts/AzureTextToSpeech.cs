@@ -21,6 +21,45 @@ public class AzureTextToSpeech : MonoBehaviour
         ttsEndpoint = $"https://{region}.tts.speech.microsoft.com/cognitiveservices/v1";
     }
 
+    private void GenerateAndSaveAudio(string text)
+    {
+        StartCoroutine(SendTextToSpeechRequestAndSave(text));
+    }
+
+    private IEnumerator SendTextToSpeechRequestAndSave(string text)
+    {
+        // Configuración de la solicitud TTS
+        var request = new UnityWebRequest(ttsEndpoint, "POST");
+        request.SetRequestHeader("Ocp-Apim-Subscription-Key", subscriptionKey);
+        request.SetRequestHeader("Content-Type", "application/ssml+xml");
+        request.SetRequestHeader("X-Microsoft-OutputFormat", "riff-16khz-16bit-mono-pcm"); // Usar WAV
+
+        // Generar el contenido SSML para el TTS de Azure
+        string ssml = $@"
+        <speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'>
+            <voice name='{voiceName}'>{text}</voice>
+        </speak>";
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(ssml);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+
+        // Enviar la solicitud y esperar respuesta
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("Error en la solicitud TTS: " + request.error);
+        }
+        else
+        {
+            byte[] audioData = request.downloadHandler.data;
+            string filePath = Path.Combine(Application.dataPath, "tts_extra.wav"); // Guardar en Assets
+            File.WriteAllBytes(filePath, audioData);
+
+            Debug.Log("Archivo de audio guardado en: " + filePath);
+        }
+    }
+
     public void SynthesizeAndPlay(string text)
     {
         StartCoroutine(SendTextToSpeechRequest(text));
