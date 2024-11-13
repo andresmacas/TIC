@@ -4,7 +4,7 @@ using UnityEngine.Windows.Speech;
 public class DictationScript : MonoBehaviour
 {
 
-    private DictationRecognizer m_DictationRecognizer;
+    public DictationRecognizer m_DictationRecognizer;
     private TriggerActive triggerActive; // Referencia al script TriggerActive
     private string dictationResult = ""; // Almacena el texto generado por el dictado
 

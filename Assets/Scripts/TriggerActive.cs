@@ -137,7 +137,7 @@ public class TriggerActive : MonoBehaviour
     private IEnumerator IniciarReconocimientoDeVoz()
     {
         // Inicia el reconocimiento de voz después de un breve retraso
-        yield return new WaitForSeconds(0.05f); // Ajusta según sea necesario
+        yield return new WaitForSeconds(0.01f); // Ajusta según sea necesario
         dictationScript.StartTextRecognition();
 
         // Espera hasta que el jugador haya terminado de hablar
