@@ -2154,7 +2154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e37e34ae23df0848a7f04a2ba6994ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pressedTalkingButton: 0
+  triggerUsed: 0
+  isPressedButton: 0
   dictationScript: {fileID: 0}
   playerText: 
 --- !u!65 &506683272
@@ -2936,7 +2937,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -4928,10 +4929,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 1.3877457
   m_Height: 3.0071554
   m_Direction: 1
-  m_Center: {x: 0, y: -1.0035777, z: 0}
+  m_Center: {x: 0.0000000068666406, y: -1.0035777, z: -0.8877456}
 --- !u!1 &1080837144 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a90b989fa4b07b44a964bfa199c4c0c9, type: 3}
@@ -6179,7 +6180,7 @@ MonoBehaviour:
   PlayerPositionCurrentFrame: {x: 0, y: 0, z: 0}
   PositionCurrentFrameLeftHand: {x: 0, y: 0, z: 0}
   PositionCurrentFrameRightHand: {x: 0, y: 0, z: 0}
-  Speed: 50
+  Speed: 100
   HandSpeed: 0
 --- !u!54 &1505329285
 Rigidbody:
@@ -6206,7 +6207,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!65 &1505329286
 BoxCollider:
@@ -6896,7 +6897,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e37e34ae23df0848a7f04a2ba6994ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pressedTalkingButton: 0
+  triggerUsed: 0
+  isPressedButton: 0
   dictationScript: {fileID: 0}
   playerText: 
 --- !u!54 &1654025377
@@ -6945,8 +6947,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.003948, y: 1.7947317, z: 2.3542972}
-  m_Center: {x: 0.2702245, y: 0.8989076, z: 0.8391517}
+  m_Size: {x: 2.564422, y: 1.7947317, z: 2.6889968}
+  m_Center: {x: -0.22007492, y: 0.8989076, z: 1.0065016}
 --- !u!4 &1654025385 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8d237e9a35eb10a4ebfdd533f549d54d, type: 3}
@@ -7306,9 +7308,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6479656878843077658, guid: 8425601152a662d4998f04758a9fc010, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 8425601152a662d4998f04758a9fc010, type: 3}
       propertyPath: m_Name
       value: edificio_final_final
+      objectReference: {fileID: 0}
+    - target: {fileID: 9152495652259646360, guid: 8425601152a662d4998f04758a9fc010, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
