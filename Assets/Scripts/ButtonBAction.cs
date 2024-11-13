@@ -26,16 +26,16 @@ public class MetaQuest2Input: MonoBehaviour {
 
     private void StartRecording(InputAction.CallbackContext context) {
         Debug.Log("Botón B presionado - Iniciando grabación");
-        //if (TriggerActive.triggerUsed) { 
-        //    TriggerActive.isPressedButton = true;
-        //}
+        if (TriggerActive.triggerUsed) {
+            TriggerActive.isPressedButton = true;
+        }
         // Aquí puedes iniciar la grabación de audio
     }
 
     private void StopRecording(InputAction.CallbackContext context) {
         Debug.Log("Botón B soltado - Deteniendo grabación");
-        //TriggerActive.isPressedButton = false;
-        //TriggerActive.StopCoroutine(TriggerActive.IniciarReconocimientoDeVoz());
+        TriggerActive.isPressedButton = false;
+        TriggerActive.dictationScript.m_DictationRecognizer.Stop();
         // Aquí puedes detener la grabación de audio y procesar el audio
     }
 }
