@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -12,17 +13,20 @@ public class ApiResponse
 public class TriggerActive : MonoBehaviour
 {
     private readonly string url = "http://localhost:3000/";
+    
     private AzureTextToSpeech azureTTS;
     private Animator animator;
     private AudioSource audioSource;
-    private bool firstTriggerActivated = false; // Controla si es la primera vez que se activa el trigger
+    public DictationScript dictationScript; // Referencia al script de reconocimiento de voz
+    public TextMeshProUGUI textIndicator;  
+
+    private bool firstTriggerActivated = true; // Controla si es la primera vez que se activa el trigger
     public bool triggerUsed = false; // Evita que el trigger se active múltiples veces
-    private bool npcFinishedTalking = false; // Controla cuando el NPC termina de hablar
     private bool playerFinishedTalking = false; // Controla cuando el jugador termina de hablar
     public bool isPressedButton = false;
     private bool isHearingAudio = false;
+    private bool isFetching = false;
 
-    public DictationScript dictationScript; // Referencia al script de reconocimiento de voz
     public string playerText = ""; // Almacena el texto del jugador
 
     private void Start()
@@ -55,13 +59,12 @@ public class TriggerActive : MonoBehaviour
     }
 
     private void OnTriggerExit(Collider other) {
-        Debug.Log("El jugador ha salido del trigger");
-        triggerUsed = false;
-        StopAllCoroutines();
-        audioSource.Stop();
-        playerFinishedTalking = false;
-        isHearingAudio = false;
-        firstTriggerActivated = false;
+        if (other.CompareTag("Player") && triggerUsed) { 
+            Debug.Log("El jugador ha salido del trigger");
+            triggerUsed = false;
+            StopAllCoroutines();
+            audioSource.Stop();
+        } 
     }
 
     private void OnTriggerEnter(Collider other)
@@ -80,16 +83,13 @@ public class TriggerActive : MonoBehaviour
         animator.SetTrigger("StartTalking");
 
         // Selecciona el archivo de audio correcto
-        string audioFileName = firstTriggerActivated ? "tts_extra.wav" : "tts_audio.wav";
-        firstTriggerActivated = true; // Marca que ya fue activado una vez
+        string audioFileName = firstTriggerActivated ? "tts_audio.wav" : "tts_extra.wav";
+        firstTriggerActivated = false; // Marca que ya fue activado una vez
         yield return ReproducirAudio(audioFileName);
         yield return new WaitForSeconds(1.0f);
-        // Inicia el reconocimiento de voz del jugador después de que el NPC termine de hablar
-
+        ChangeText("Presiona B para hablar");
         // Regresa a la animación Idle
         animator.Play("Idle");
-
-        // Permite que el trigger se reactive si es necesario
     }
 
     private IEnumerator ReproducirAudio(string audioFileName)
@@ -124,6 +124,8 @@ public class TriggerActive : MonoBehaviour
 
     private IEnumerator HacerSolicitud()
     {
+        if (isFetching) yield return null;
+        isFetching = true;
         UnityWebRequest request = UnityWebRequest.Get(url + playerText);
         Debug.Log(request.url);
         yield return request.SendWebRequest();
@@ -140,6 +142,7 @@ public class TriggerActive : MonoBehaviour
             azureTTS.SynthesizeAndPlay(response.message);
             StopCoroutine(HacerSolicitud());
             playerText = "";
+            isFetching = false;
         }
     }
 
@@ -148,7 +151,6 @@ public class TriggerActive : MonoBehaviour
             StartCoroutine(IniciarReconocimientoDeVoz());
             isHearingAudio = true;
         } else { 
-
             StopCoroutine(IniciarReconocimientoDeVoz());
         }
 
@@ -164,9 +166,12 @@ public class TriggerActive : MonoBehaviour
         playerFinishedTalking = false;
         Debug.Log("Se va a comprobar si el boton esta presionado");
         if (isPressedButton) {
-
+            if (isFetching) { 
+                ChangeText("Espera tu respuesta para poder volver a preguntar");
+                yield return null;
+            }
             // Inicia el reconocimiento de voz después de un breve retraso
-            dictationScript.StartTextRecognition();
+            dictationScript.StartRecording();
 
             // Espera hasta que el jugador haya terminado de hablar
             yield return new WaitUntil(() => playerFinishedTalking);
@@ -227,5 +232,10 @@ public class TriggerActive : MonoBehaviour
             // Llamar a un método (por ejemplo, para reproducir audio)
             azureTTS.SynthesizeAndPlay(response.message);
         }
+    }
+
+    public void ChangeText(string newText)
+    {
+        textIndicator.text = newText; // Cambia el texto
     }
 }

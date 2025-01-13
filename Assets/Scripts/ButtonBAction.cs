@@ -35,7 +35,7 @@ public class MetaQuest2Input: MonoBehaviour {
     private void StopRecording(InputAction.CallbackContext context) {
         Debug.Log("Botón B soltado - Deteniendo grabación");
         TriggerActive.isPressedButton = false;
-        TriggerActive.dictationScript.m_DictationRecognizer.Stop();
+        TriggerActive.dictationScript.StopRecording();
         // Aquí puedes detener la grabación de audio y procesar el audio
     }
 }
