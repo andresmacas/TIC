@@ -144,6 +144,7 @@ public class TriggerActive : MonoBehaviour
             playerText = "";
             isFetching = false;
         }
+        
     }
 
     private void Update() {
